@@ -1,0 +1,12 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.SearchPage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+	Layout = "Master.cshtml";
+}
+@section cp_head {
+    @Html.Raw(Model.Value("cpHead"))
+}
+@section cp_scripts {
+    @Html.Raw(Model.Value("cpScripts"))
+}

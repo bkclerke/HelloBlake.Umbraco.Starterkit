@@ -1,0 +1,132 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="wwwroot\umbraco\**" />
+      <Content Remove="wwwroot\umbraco\**" />
+      <EmbeddedResource Remove="wwwroot\umbraco\**" />
+      <None Remove="wwwroot\umbraco\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="scss\main.scss" />
+      <None Remove="wwwroot\css\images\our_heart.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.SassCompiler" Version="1.55.0" />
+        <PackageReference Include="Umbraco.Cms" Version="10.3.2" />
+    </ItemGroup>
+
+    <!-- Force windows to use ICU. Otherwise Windows 10 2019H1+ will do it, but older windows 10 and most if not all winodws servers will run NLS -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
+        <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2" />
+    </ItemGroup>
+
+
+
+    <PropertyGroup>
+        <CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
+    </PropertyGroup>
+
+    <!-- Set this to true if ModelsBuilder mode is not InMemoryAuto-->
+    <PropertyGroup>
+        <RazorCompileOnBuild>false</RazorCompileOnBuild>
+        <RazorCompileOnPublish>false</RazorCompileOnPublish>
+        <UserSecretsId>8231dc27-7430-4511-89de-1b9a9814216c</UserSecretsId>
+    </PropertyGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\main.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\blocks\textwithimage\_layout.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\blocks\textwithimage\_theme.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\blocks\carousel\_theme.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Update="wwwroot\css\images\our_heart.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\_layout.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\navbar\_theme.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\abstracts\_spacing.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\abstracts\_base.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\abstracts\_variables.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="scss\main.scss" />
+      <Content Include="wwwroot\media\0rnbvis2\kate-stone-matheson-uy5t-cjuik4-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\40yjxvbh\zeke-tucker-gssk4u8yppm-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\4itfnw3e\blanca-paloma-sanchez-avftrf9qinm-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\5h2h3oab\angele-kamp-osrpn1d52em-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\5lcn3qcj\kate-stone-matheson-uy5t-cjuik4-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\d3ifnn0x\modcatshop-pdalzg0yn-8-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\ej5fq2nn\yen-vu-2mnfnpdsgyg-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\f4iflrn2\blake-vector-avatar.png" />
+      <Content Include="wwwroot\media\f4lh4dsn\our_heart.png" />
+      <Content Include="wwwroot\media\g45bjccx\kate-stone-matheson-uy5t-cjuik4-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\gcbkfnzy\lloyd-henneman-mbrfya0dyye-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\kkvm0fus\kate-stone-matheson-uy5t-cjuik4-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\lc1k3cgx\zeke-tucker-gssk4u8yppm-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\lyteiasw\amy-baugess-mnju0a6eee0-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\r51g4g2r\lloyd-henneman-mbrfya0dyye-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\rt5ceqeq\lloyd-henneman-mbrfya0dyye-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\rundjajy\scott-webb-hdyo6rr3kqk-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\utadvxyn\sheelah-brennan-bpddzaa4oe0-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\vc5llrx2\modcatshop-pdalzg0yn-8-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\vkjkhq3a\zeke-tucker-gssk4u8yppm-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\xhkdidtj\amy-baugess-mnju0a6eee0-unsplash-custom.jpg" />
+      <Content Include="wwwroot\media\yjrfpb0e\zeke-tucker-gssk4u8yppm-unsplash-custom.jpg" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\abstracts\_utilities.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\blocks\linklist\_layout.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\blocks\carousel\_layout.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="scss\blocks\linklist\_theme.scss" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="App_Plugins\customIcons\Backoffice\Icons\" />
+      <Folder Include="wwwroot\media\11ejxtcb\" />
+      <Folder Include="wwwroot\media\1hybt4aq\" />
+      <Folder Include="wwwroot\media\3kylzo1t\" />
+      <Folder Include="wwwroot\media\4gjjxzo1\" />
+      <Folder Include="wwwroot\media\ah4ntndv\" />
+      <Folder Include="wwwroot\media\b50dn0cp\" />
+      <Folder Include="wwwroot\media\ctwojhvx\" />
+      <Folder Include="wwwroot\media\gqmngqls\" />
+      <Folder Include="wwwroot\media\l5cl3h5y\" />
+      <Folder Include="wwwroot\media\nvunpodb\" />
+      <Folder Include="wwwroot\media\r3inhjip\" />
+      <Folder Include="wwwroot\media\rgtlsshh\" />
+      <Folder Include="wwwroot\media\tuydqmbr\" />
+      <Folder Include="wwwroot\media\zhck41re\" />
+    </ItemGroup>
+    <ItemGroup>
+      <UpToDateCheckInput Remove="wwwroot\umbraco\**" />
+    </ItemGroup>
+
+</Project>

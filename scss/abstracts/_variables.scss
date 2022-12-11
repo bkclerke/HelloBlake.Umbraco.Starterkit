@@ -1,0 +1,41 @@
+﻿// ----------------------------------
+// BREAKPOINTS
+// ----------------------------------
+
+$device-sm: 540px;
+$device-md-max: 767px; // MAX WIDTH IPAD FIX
+$device-md: 768px;
+$device-lg: 992px;
+$device-xl: 1200px;
+
+$nav-mobile: $device-xl;
+$nav-brand-max-width: 250px;
+
+// ----------------------------------
+// SPACING
+// ----------------------------------
+
+$space-p: 1.875rem; // 30px
+$space-xs: 1rem;
+$space-sm: 25px;
+$space-md: 50px;
+$space-lg: 75px;
+$space-gutter: 15px;
+
+// ----------------------------------
+// TYPE
+// ----------------------------------
+
+$font-base-size: 16px;
+$font-line-height: 1.5em;
+
+$font-header: 'Montserrat', sans-serif;
+$font-family: 'Montserrat', sans-serif;
+$font-serif: 'Roboto Slab', serif;
+
+// ----------------------------------
+// THEME
+// ----------------------------------
+
+$pc-light: #fff;
+$pc-dark: #000;

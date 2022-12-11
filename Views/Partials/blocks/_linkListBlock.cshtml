@@ -1,0 +1,49 @@
+﻿@using Umbraco.Cms.Core.Models;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var content = Model;
+
+    var links = content.Value<IEnumerable<Link>>("links");
+    var dynLinks = content.Value<IPublishedContent>("dynLinks");
+
+    if ((links != null && links.Count() > 0) || dynLinks != null)
+    {
+        <div class="link-list mb-4">
+            <ul class="list-group">
+                @if (dynLinks != null)
+                {
+                    var childLinks = dynLinks.Children();
+                    if (childLinks.Count() > 0)
+                    {
+                        foreach (var link in childLinks)
+                        {
+                            if (link.ContentType.Alias == "altLink")
+                            {
+                                var altLink = link.Value<Link>("link");
+                                <li class="list-group-item">
+                                    <a href="@altLink.Url" target="@altLink.Target">@altLink.Name</a>
+                                </li>
+                            }
+                            else
+                            {
+                                string name = link.HasValue("pageHeaderOverride") ? link.Value<string>("pageHeaderOverride") : link.Name;
+                                <li class="list-group-item">
+                                    <a href="@link.Url()">@name</a>
+                                </li>
+                            }
+                        }
+                    }
+                }
+                @if (links.Count() > 0)
+                {
+                    foreach (var link in links)
+                    {
+                        <li class="list-group-item">
+                            <a href="@link.Url" target="@link.Target">@link.Name</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+}

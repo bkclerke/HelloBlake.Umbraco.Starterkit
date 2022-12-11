@@ -1,0 +1,94 @@
+﻿@using Umbraco.Cms.Core.PublishedCache;
+@inject ITagQuery _tagQuery;
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.ArticlePage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = "Master.cshtml";
+    var article = Model;
+    string siteDomain = String.Format("{0}://{1}", Context.Request.Scheme, Context.Request.Host);
+    string pageUrl = String.Format("{0}{1}", siteDomain, Context.Request.Path.ToString().TrimEnd('/'));
+
+    var home = article.AncestorOrSelf(1);
+    var blogPage = article.AncestorOrSelf(1).Children().Where(x => x.ContentType.Alias == "blogPage").FirstOrDefault();
+
+    string articleTitle = article.HasValue("articleTitle") ? article.Value<string>("articleTitle") : article.Name;
+    string articleAuthor = article.HasValue("articleAuthor") ? article.Value<string>("articleAuthor") : blogPage.Value<string>("defaultAuthorName");
+    // SCHEMA INFORMATION
+    string articleImgUrl = string.Empty;
+    if (article.HasValue("ogImage"))
+    {
+        articleImgUrl = siteDomain + Url.GetCropUrl(article, "ogImage", "og").ToString();
+    }
+    else if (article.HasValue("articleImage"))
+    {
+        articleImgUrl = siteDomain + Url.GetCropUrl(article, "articleImage", "lg").ToString();
+    }
+    string articleDate = string.Format("{0: MM-dd-yyyy}", article.Value<DateTime>("articleDate"));
+    string articleDescription = article.HasValue("previewText") ? article.Value("previewText").ToString() : string.Empty;
+
+    // CATEGORIES
+    var categories = _tagQuery.GetTagsForProperty(article.Id, "articleCategories", "articles");
+    int catCount = categories.Count();
+}
+@section cp_head {
+    <!-- BLOG SCHEMA -->
+    <script type="application/ld+json">
+        {
+            "@@context": "http://schema.org",
+            "@@type": "BlogPosting",
+            "mainEntityOfPage": "@pageUrl",
+            "headline": "@articleTitle",
+            "image": {
+                "@@type": "ImageObject",
+                "url": "@articleImgUrl"
+            },
+            "datePublished": "@articleDate",
+            "dateCreated": "@articleDate",
+            "dateModified": "@articleDate",
+            "description": "@articleDescription",
+            "author": {
+                "@@type": "Person",
+                "name": "@articleAuthor"
+            },
+            "publisher": {
+                "@@type": "Organization",
+                "name": "@home.Value("businessName")",
+                "logo": {
+                    "@@type": "ImageObject",
+                    "url": "@siteDomain/css/images/our_heart.png"
+                }
+            }
+        }
+    </script>
+    @Html.Raw(Model.Value("cpHead"))
+}
+@section cp_scripts {
+    @Html.Raw(Model.Value("cpScripts"))
+}
+<main id="content">
+    @await Html.PartialAsync("_Breadcrumbs")
+    <div class="container">
+        <div class="row">
+            <div class="row">
+                <p><i class="fa-solid fa-calendar-days"></i> @articleDate</p>
+                <h1>@articleTitle</h1>
+                @if (categories != null && categories.Count() > 0)
+                {
+                    int cCount = 1;
+                    <p>
+                        @foreach (var c in categories)
+                        {
+                            <span>@c.Text@(cCount < catCount ? ", " : "")</span>
+                            cCount++;
+                        }
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+    <article>
+        @Html.GetBlockListHtml(Model, "contentBlocks")
+        @await Html.PartialAsync("_BlogRelatedArticles")
+    </article>
+</main>

@@ -1,0 +1,67 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+@{
+    var content = (ContentModels.EightSection)Model.Content;
+    var settings = (ContentModels.SectionSettings)Model.Settings;
+
+    var column1Blocks = content.Value<IEnumerable<BlockListItem>>("column1");
+
+    @if (column1Blocks != null)
+    {
+        // SECTION SETTINGS
+        // >>>>>>>>>>>>>>> TODO: SETUP REUSABLE COMPONENT SETTINGS
+        // >>>>>>>>>>>>>>> TODO: SETUP THEMES
+        string topSpace = !string.IsNullOrEmpty("sectionTopSpace") ? settings.Value<string>("sectionTopSpace") : string.Empty;
+        if (!string.IsNullOrEmpty(topSpace))
+        {
+            switch (topSpace)
+            {
+                case "Small":
+                    topSpace = "pt-sm";
+                    break;
+                case "Medium":
+                    topSpace = "pt-md";
+                    break;
+                case "Large":
+                    topSpace = "pt-lg";
+                    break;
+                default:
+                    topSpace = string.Empty;
+                    break;
+            }
+        }
+        string btmSpace = !string.IsNullOrEmpty("sectionBtmSpace") ? settings.Value<string>("sectionBtmSpace") : string.Empty;
+        if (!string.IsNullOrEmpty(btmSpace))
+        {
+            switch (btmSpace)
+            {
+                case "Small":
+                    btmSpace = "pb-sm";
+                    break;
+                case "Medium":
+                    btmSpace = "pb-md";
+                    break;
+                case "Large":
+                    btmSpace = "pb-lg";
+                    break;
+                default:
+                    btmSpace = string.Empty;
+                    break;
+            }
+        }
+
+        <div class="section-eight @topSpace @btmSpace">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 col-sm-10 offset-sm-1">
+                        @foreach (var block in column1Blocks)
+                        {
+                            @await Html.PartialAsync("blocklist/Components/" + block.Content.ContentType.Alias, block)
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

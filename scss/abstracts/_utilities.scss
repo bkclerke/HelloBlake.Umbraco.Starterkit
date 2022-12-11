@@ -1,0 +1,25 @@
+﻿// ----------------------------------
+// EXTEND
+// ----------------------------------
+
+%animate-all {
+    transition: all ease .3s;
+}
+
+.header-text {
+    font-family: $font-header;
+    font-weight: 600;
+}
+
+// ----------------------------------
+// MIXINS
+// ----------------------------------
+
+@mixin fontawesome($weight) {
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Font Awesome 5 Free";
+    font-weight: $weight; // 900 SOLID, 400 REGULAR OR BRANDS, 300 LIGHT
+}

@@ -1,0 +1,21 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+@{
+    var content = (ContentModels.GlobalElement)Model.Content;
+    var settings = (ContentModels.GlobalBlockSettings)Model.Settings;
+
+    var globalBlocks = content.Value<IEnumerable<IPublishedContent>>("block");
+
+    // TODO: VERIFY ELEMENT IS ALLOWED IN COLUMN CONFIGURATION BEFORE RENDERING
+    // TODO: REUSE PARTIAL FOR BLOCK LIST AND GLOBAL BLOCK VIEW
+
+    if (globalBlocks != null)
+    {
+        @foreach (var block in globalBlocks)
+        {
+            string blockAlias = "_" + block.ContentType.Alias;
+            @await Html.PartialAsync("blocks/" + blockAlias, block)
+        }
+    }
+}

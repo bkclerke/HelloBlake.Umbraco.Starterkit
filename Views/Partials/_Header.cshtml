@@ -1,0 +1,118 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models
+@{
+    var home = Model.AncestorOrSelf(1);
+    // GET DEFAULT PAGES
+    var pages = home.Children.Where(x => x.IsVisible() && x.ContentType.Alias != "howToGuidePage" && x.ContentType.Alias != "blockFolder" && x.ContentType.Alias != "utilityFolder" && x.ContentType.Alias != "contentFolder" && x.ContentType.Alias != "xmlSitemap");
+    // CHECK FOR GLOBAL SETTINGS NODE
+    var utilitiesFolder = home.Children.Where(x => x.ContentType.Alias == "utilityFolder").FirstOrDefault();
+    var globalSettings = utilitiesFolder != null ? utilitiesFolder.Children.Where(x => x.ContentType.Alias == "globalSettings").FirstOrDefault() : null;
+    if (globalSettings == null)
+    {
+        <!-- Global Settings Not Configured -->
+    }
+    // SETUP MAIN NAVIGATION
+    var mainNav = globalSettings != null ? globalSettings.Value<IEnumerable<IPublishedContent>>("mainNav") : pages;
+    // SETUP DROPDOWN
+    bool showDropdown = globalSettings != null ? globalSettings.Value<bool>("showDropdown") : false; // IF NO GLOBAL SETTINGS, MANUALLY SET DROPDOWN VALUE
+    string hasMenuClass = showDropdown ? "has-menu" : string.Empty;
+    // SETUP DROPDOWN ARROWS
+    bool navHasArrows = true; // MANUAL SETTING -- FOR DESIGNS WITH NAVIGATION ARROWS ON LARGE SCREENS, SET TO TRUE
+    string hasArrowsClass = showDropdown && navHasArrows ? "has-arrows" : string.Empty;
+    // SETUP HOVER
+    bool menuHoverOnly = false;
+    string menuHoverClass = string.Empty;
+    // DETERMINE IF HOVER OR NOT ON DROPDOWN MENU
+    if (showDropdown)
+    {
+        // IF NO ARROWS ADD HOVER CLASS
+        if (!navHasArrows)
+        {
+            menuHoverOnly = true;
+            menuHoverClass = "has-hover";
+        }
+    }
+
+    <header class="header d-print-none" role="banner">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+              <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    @if (globalSettings != null && globalSettings.HasValue("headerLogoLg"))
+                    {
+                        var logoImg = globalSettings.Value<IPublishedContent>("headerLogoLg");
+                        string logoAlt = logoImg.Value<string>("altText");
+                        if (logoImg != null)
+                        {
+                            <img src="@logoImg.Url()" alt="@logoAlt" class="logo" />
+                        }
+                    }
+                    else {
+                        <img src="~/css/images/our_heart.png" alt="Logo" class="logo" />
+                    }
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    @if (mainNav.Count() > 0)
+                    {
+                    <ul class="navbar-nav ml-auto @hasMenuClass @hasArrowsClass @menuHoverClass">
+                        @foreach (var item in mainNav)
+                        {
+                            bool isRoot = item.Id == Model.Root().Id;
+                            bool isActive = item.Id == Model.Id;
+                            string itemName = item.HasValue("navName") ? item.Value<string>("navName") : item.Name;
+                            string itemLink = !isRoot ? item.Url().TrimEnd('/') : item.Url();
+                            string itemLinkTarget = "_self";
+                            var subNav = item.Children.Where(x => x.IsVisible() && x.ContentType.Alias != "pcFolder" && x.ContentType.Alias != "articlePage");
+
+                            bool altLink = item.ContentType.Alias == "altLink";
+                            if (altLink)
+                            {
+                                var link = item.Value<Link>("link");
+                                if (link != null)
+                                {
+                                    itemLink = link.Url;
+                                    itemLinkTarget = link.Target;
+                                }
+                            }
+
+                            <li class="nav-item @(showDropdown && subNav.Count() > 0 && !isRoot ? "dropdown" : null)">
+                                <a class="nav-link @(isActive ? "active" : null)" @(isActive ? "aria-current=page" : null) href="@itemLink" target="@itemLinkTarget">@itemName</a>
+                                @if (showDropdown && subNav.Count() > 0 && item.ContentType.Alias != "home")
+                                {
+                                    string dropdownId = "navbarDropdown-" + Model.Id;
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">@itemName Dropdown</span></a>
+                                    <ul class="dropdown-menu">
+                                        @foreach (var subItem in subNav)
+                                        {
+                                            string subItemName = subItem.HasValue("navName") ? subItem.Value<string>("navName") : subItem.Name;
+                                            string subItemLink = subItem.Url().TrimEnd('/');
+                                            string subItemLinkTarget = "_self";
+
+                                            bool subItemAltLink = subItem.ContentType.Alias == "altLink";
+                                            if (subItemAltLink)
+                                            {
+                                                var subLink = subItem.Value<Link>("link");
+                                                if (subLink != null)
+                                                {
+                                                    subItemLink = subLink.Url;
+                                                    subItemLinkTarget = subLink.Target;
+                                                }
+                                            }
+                                            <li><a class="dropdown-item @(subItem.Id == Model.Id ? "active" : null)" href="@subItemLink" target="@subItemLinkTarget">@subItemName</a></li>
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    </ul>
+                    }
+                </div>
+              </div>
+            </nav>
+        </div>
+    </header>
+
+}

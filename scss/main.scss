@@ -1,0 +1,23 @@
+﻿// ABSTRACTS
+@import "abstracts/_variables.scss";
+@import "abstracts/_utilities.scss";
+
+// LAYOUT
+@import "layout/_spacing.scss";
+@import "layout/_base.scss";
+
+// NAVBAR
+@import "navbar/_layout.scss";
+@import "navbar/_theme.scss";
+
+// BLOCKS - TEXT WITH IMAGE
+@import "blocks/textwithimage/_layout.scss";
+@import "blocks/textwithimage/_theme.scss";
+
+// BLOCKS - CAROUSEL
+@import "blocks/carousel/_layout.scss";
+@import "blocks/carousel/_theme.scss";
+
+// BLOCKS - LINK LIST
+@import "blocks/linklist/_layout.scss";
+@import "blocks/linklist/_theme.scss";

@@ -1,0 +1,22 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var relatedArticles = Model.Value<IEnumerable<IPublishedContent>>("relatedArticles");
+    if (relatedArticles != null && relatedArticles.Count() > 0)
+    {
+        <div class="container">
+            <div class="row text-center">
+                <div class="col">
+                    <h2>Related Articles</h2>
+                </div>
+            </div>
+            <div class="row row-cols-3 gy-4">
+                @foreach (var article in relatedArticles)
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("_ArticleCard", article)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}

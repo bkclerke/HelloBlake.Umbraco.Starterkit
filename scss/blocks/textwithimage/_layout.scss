@@ -1,0 +1,36 @@
+﻿// ----------------------------------
+// TEXT WITH IMAGE
+// ----------------------------------
+
+.text-img {
+    // IMAGE OUTSIDE OF CONTAINER
+    &.img-out {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+
+        .img-wrap {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+        }
+        .text-wrap {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+        }
+        
+        @media (max-width: $device-md)
+        {
+            grid-template-columns: auto;
+            grid-template-rows: auto;
+
+            .img-wrap {
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+            }
+            .text-wrap {
+                grid-column: 1 / 2;
+                grid-row: 2 / 3;
+            }
+        }
+    }
+}

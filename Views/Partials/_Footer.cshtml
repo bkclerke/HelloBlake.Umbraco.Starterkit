@@ -1,0 +1,16 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var home = Model.AncestorOrSelf(1);
+    var utilitiesFolder = home.Children.Where(x => x.ContentType.Alias == "utilityFolder").FirstOrDefault();
+    var globalSettings = utilitiesFolder != null ? utilitiesFolder.Children.Where(x => x.ContentType.Alias == "globalSettings").FirstOrDefault() : null;
+
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <p>&copy; @DateTime.Now.Year @(globalSettings != null ? globalSettings.Value<string>("businessName") : null)</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+}

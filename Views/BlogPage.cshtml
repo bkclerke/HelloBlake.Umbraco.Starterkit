@@ -1,0 +1,25 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "Master.cshtml";
+}
+@section cp_head {
+    @Html.Raw(Model.Value("cpHead"))
+}
+@section cp_scripts {
+    @Html.Raw(Model.Value("cpScripts"))
+}
+<main id="content">
+    @await Html.PartialAsync("_ContentHeader")
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                @await Html.PartialAsync("_BlogCategories")
+            </div>
+            <div class="col-md-9">
+                @await Html.PartialAsync("_BlogListing")
+            </div>
+        </div>
+    </div>
+    @Html.GetBlockListHtml(Model, "contentBlocks")
+</main>

@@ -1,0 +1,63 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models;
+@{
+    var image = Model.Value<IPublishedContent>("image");
+    // ELEMENT SETTINGS
+    bool alignRight = Model.Value<bool>("alignRight"); // default left
+    bool alignOut = Model.Value<bool>("alignOutside"); // default container
+    string imgAlignClass = alignOut ? "img-out" : string.Empty;
+
+    @if (image != null)
+    {
+        <div class="text-img @imgAlignClass">
+            @if (alignOut)
+            {
+                string imgColCSS = alignRight ? "col-md-6 offset-md-6 order-md-2" : "col-md-6";
+                string textColCSS = alignRight ? "col-md-6 order-md-1" : "col-md-6 offset-md-6";
+
+                <div class="img-wrap">
+                    <div class="row g-0 align-items-center">
+                        <div class="@imgColCSS">
+                            @if (image != null)
+                            {
+                                string altText = image.Value<string>("altText");
+                                <img src="@image.Url()" alt="@altText" class="img-fluid" />
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="container text-wrap d-flex align-items-stretch">
+                    <div class="row align-items-center flex-fill">
+                        <div class="@textColCSS">
+                            <div class="px-4 py-5">
+                                @Model.Value("text")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                string imgColCSS = alignRight ? "col-md-6 order-md-2" : "col-md-6";
+                string textColCSS = alignRight ? "col-md-6 order-md-1" : "col-md-6";
+
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="@imgColCSS">
+                            @if (image != null)
+                            {
+                                string altText = image.Value<string>("altText");
+                                <img src="@image.Url()" alt="@altText" class="img-fluid" />
+                            }
+                        </div>
+                        <div class="@textColCSS">
+                            <div class="px-4 py-5">
+                                @Model.Value("text")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}

@@ -1,0 +1,68 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+@using Umbraco.Cms.Core.Models;
+@{
+    var content = (ContentModels.TextWithImageElement)Model.Content;
+    var settings = (ContentModels.TextWithImageSettings)Model.Settings;
+
+    var image = content.Value<IPublishedContent>("image");
+    // ELEMENT SETTINGS
+    bool alignRight = settings.Value<bool>("alignRight"); // default left
+    bool alignOut = settings.Value<bool>("alignOutside"); // default container
+    string imgAlignClass = alignOut ? "img-out" : string.Empty;
+
+    @if (image != null)
+    {
+        <div class="text-img @imgAlignClass">
+            @if (alignOut)
+            {
+                string imgColCSS = alignRight ? "col-md-6 offset-md-6 order-md-2" : "col-md-6";
+                string textColCSS = alignRight ? "col-md-6 order-md-1" : "col-md-6 offset-md-6";
+
+                <div class="img-wrap">
+                    <div class="row g-0 align-items-center">
+                        <div class="@imgColCSS">
+                            @if (image != null)
+                            {
+                                string altText = image.Value<string>("altText");
+                                <img src="@image.Url()" alt="@altText" class="img-fluid" />
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="container text-wrap d-flex align-items-stretch">
+                    <div class="row align-items-center flex-fill">
+                        <div class="@textColCSS">
+                            <div class="px-4 py-5">
+                                @content.Value("text")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                string imgColCSS = alignRight ? "col-md-6 order-md-2" : "col-md-6";
+                string textColCSS = alignRight ? "col-md-6 order-md-1" : "col-md-6";
+
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="@imgColCSS">
+                            @if (image != null)
+                            {
+                                string altText = image.Value<string>("altText");
+                                <img src="@image.Url()" alt="@altText" class="img-fluid" />
+                            }
+                        </div>
+                        <div class="@textColCSS">
+                            <div class="px-4 py-5">
+                                @content.Value("text")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}

@@ -1,0 +1,124 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions;
+@using System.Web;
+@using System.Text;
+@using Microsoft.AspNetCore.Http;
+@using System.Globalization;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var home = Model.Root();
+    var blogPage = home.Children.Where(x => x.ContentType.Alias == "blogPage").FirstOrDefault();
+    if (blogPage != null)
+    {
+        var articles = blogPage.Children.Where(x => x.ContentType.Alias == "articlePage").OrderByDescending(x => x.Value<DateTime>("articleDate")).ToList();
+
+        // FILTER ARTICLE CATEGORIES
+        bool hasCategory = false;
+        var categoryQuery = Context.Request.Query["category"].ToString();
+        var categoriesFilter = !string.IsNullOrEmpty(categoryQuery) ? categoryQuery.Split(',').ToList() : null;
+        if (categoriesFilter != null && categoriesFilter.Count() > 0)
+        {
+            hasCategory = true;
+            articles = articles.Where(a => a.Value<IEnumerable<string>>("articleCategories") != null && a.Value<IEnumerable<string>>("articleCategories").Any(c => categoriesFilter.Contains(c.ToLower().Replace(' ', '-')))).ToList();
+        }
+
+        // PAGINATION
+        int amt = blogPage.HasValue("pageAmount") ? blogPage.Value<int>("pageAmount") : 10;
+        int allArticlesCount = articles.Count(); // COUNT ARTICLES BEFORE PAGINATION APPLIED
+        bool paginate = allArticlesCount > amt; // CHECK THAT ARTICLES COUNT IS GREATER THAN PAGINATION AMOUNT
+        int qPage = Convert.ToInt32(Context.Request.Query["p"]);
+        int skip = (int)((qPage - 1) * amt);
+
+        articles = articles.Skip(skip).Take(amt).ToList(); // APPLY PAGINATION
+
+        if (hasCategory)
+        {
+            int i = 1;
+
+            <div class="row">
+                <div class="col">
+                    <p>
+                        <span>Currently filtering by: </span>
+                        @foreach (var c in categoriesFilter)
+                        {
+                            @CultureInfo.CurrentCulture.TextInfo.ToTitleCase(c.Replace('-', ' '))
+                            if (i < categoriesFilter.Count())
+                            {
+                                @:,&nbsp;
+                            }
+                            i++;
+                        }
+                    </p>
+                </div>
+            </div>
+        }
+
+        if (articles.Count() > 0)
+        {
+            <section class="blog-list">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    @foreach (var article in articles)
+                    {
+                        <div class="col">
+                            @await Html.PartialAsync("_ArticleCard", article)
+                        </div>
+                    }
+                </div>
+            </section>
+
+            if (paginate)
+            {
+                bool prev = qPage <= 1 ? false : true;
+                bool next = allArticlesCount < qPage * amt ? false : true; // CHECK ARTICLES COUNT AFTER PAGINATION
+
+                <nav class="my-4" aria-label="Page Listing Navigation">
+                    <ul class="pagination">
+                        <li class="page-item @(!prev ? "disabled" : null)">
+                            <a class="page-link" href="@CheckPagination(qPage-1)" aria-label="Previous" @(!prev ? "aria-disabled=\"true\"" : null)>
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        @for (var i = 1; i <= Math.Ceiling((double)(allArticlesCount / (double)amt)); i++)
+                        {
+                            bool currentPage = i == qPage;
+
+                            <li class="page-item @(currentPage ? "active" : "")" @(currentPage ? "aria-current=\"page\"" : "")>
+                                <a class="page-link" href="@CheckPagination(i)">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                        <li class="page-item @(!next ? "disabled" : null)">
+                            <a class="page-link" href="@CheckPagination(qPage+1)" aria-label="Next" @(!next ? "aria-disabled=\"true\"" : null)>
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+        else
+        {
+            <p>No articles were found.</p>
+        }
+    }
+}
+@functions {
+    public string CheckPagination(int page)
+    {
+        // NOTE: PAGE SHOULD ALWAYS BE FIRST QUERY. STRINGBUILDER SETUP TO ADD ADDITIONAL QUERIES AFTER.
+
+        var path = Context.Request.Path.ToString();
+        var queries = HttpUtility.ParseQueryString(Context.Request.QueryString.ToString());
+
+        StringBuilder sb = new StringBuilder();
+
+        foreach(var q in queries)
+        {
+            if (q.ToString() != "p")
+            {
+                sb.Append("&" + q.ToString() + "=" + Context.Request.Query[q.ToString()]);
+            }
+        }
+        return string.Format(path + "?p=" + page.ToString() + sb);
+    }
+}

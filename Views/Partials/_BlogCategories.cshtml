@@ -1,0 +1,43 @@
+﻿@using System;
+@using System.Globalization;
+@using Umbraco.Cms.Core.PublishedCache;
+@inject ITagQuery _tagQuery;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var home = Model.Root();
+    var blogPage = home.Children.Where(x => x.ContentType.Alias == "blogPage").FirstOrDefault();
+    var blogTags = _tagQuery.GetTagsForProperty(blogPage.Id, "blogCategories", "articles").OrderBy(x => x.Text);
+
+    var categoryQuery = Context.Request.Query["category"].ToString();
+    var categoriesFilter = !string.IsNullOrEmpty(categoryQuery) ? categoryQuery.Split(',').ToList() : null;
+    
+    if(blogTags.Any() && blogTags.Count() > 0)
+    {
+        <div class="accordion" id="accordion-category">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Article Categories
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion-category">
+                    <div class="accordion-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="@blogPage.Url()" class="list-group-item list-group-item-action @(string.IsNullOrEmpty(categoryQuery) ? "active" : "")" @(string.IsNullOrEmpty(categoryQuery) ? "aria-current=\"true\"" : "")>All Categories</a>
+                            @foreach (var tag in blogTags)
+                            {
+                                string tagValue = tag.Text.ToLower().Replace(' ', '-');
+                                string tagName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tag.Text);
+                                bool active = categoriesFilter != null ? categoriesFilter.Contains(tagValue) : false;
+
+                                string categoryUrl = blogPage.Url() + "?category=" + tagValue;
+                                <a href="@categoryUrl" class="list-group-item list-group-item-action @(active ? "active" : "")" @(active ? "aria-current=\"true\"" : "")>@tagName</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    }
+}

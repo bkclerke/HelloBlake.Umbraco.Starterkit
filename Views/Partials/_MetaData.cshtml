@@ -1,0 +1,98 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models.Blocks;
+@using Microsoft.AspNetCore.Http.Extensions;
+@using System.Text.RegularExpressions
+@{
+    var home = Model.Root();
+    var utilitiesFolder = home.Children.Where(x => x.ContentType.Alias == "utilityFolder").FirstOrDefault();
+    var globalSettings = utilitiesFolder != null ? utilitiesFolder.Children.Where(x => x.ContentType.Alias == "globalSettings").FirstOrDefault() : null;
+    @if (globalSettings == null)
+    {
+        <!-- GLOBAL SETTINGS IS NULL -->
+    }
+
+    // PAGE URL - UTILIZE PAGE URL IN BROWSER WINDOW WITHOUT ANY QUERY STRINGS
+    string siteDomain = String.Format("{0}://{1}", Context.Request.Scheme, Context.Request.Host);
+    string pageUrl = String.Format("{0}{1}", siteDomain, Context.Request.Path.ToString().TrimEnd('/'));
+    // CANONICAL URL - SET PAGE URL TO CANONICAL URL OVERRIDE
+    pageUrl = Model.HasValue("canonical") ? Model.Value<string>("canonical") : pageUrl;
+
+    // PAGE TITLE TAG - UTILIZE PAGE TITLE TAG FIELD FIRST, IF EMPTY FALLBACK TO PAGE NAME
+    string title = Model.Value<string>("pageTitleTag") != "" ? Model.Value<string>("pageTitleTag") : Model.Name;
+    // META DESCRIPTION - UTILIZE META DESCRIPTION FIELD, IF EMPTY FALLBACK TO HOME PAGE META DESCRIPTION
+    string description = Model.Value<string>("metaDescription") != "" ? Model.Value<string>("metaDescription") : home.Value<string>("metaDescription");
+    // OPEN GRAPH TITLE - UTILIZE OGTITLE FIELD FIRST, IF EMPTY FALLBACK TO PAGE TITLE TAG
+    string ogTitle = Model.Value<string>("ogTitle") != "" ? Model.Value<string>("ogTitle") : title;
+    // OPEN GRAPH IMAGE - UTILIZE CURRENT PAGE OG IMAGE, IF EMPTY FALLBACK TO HOME PAGE OG IMAGE
+    string ogImgUrl = string.Empty;
+    if (home.HasValue("ogImage") || Model.HasValue("ogImage"))
+    {
+        var imgSrc = Model.HasValue("ogImage") ? Model : home;
+        var media = imgSrc.Value<IPublishedContent>("ogImage");
+        ogImgUrl = String.Format("{0}{1}", siteDomain, media.Url());
+    }
+
+    // OPEN GRAPH - GET OPEN GRAPH DATA FROM GLOBAL SETTINGS
+    string twitter = globalSettings != null && globalSettings.HasValue("twitterHandle") ? "@" + globalSettings.Value<string>("twitterHandle") : string.Empty;
+    string schemaType = globalSettings != null && globalSettings.HasValue("schemaType") ? globalSettings.Value<string>("schemaType") : string.Empty;
+    string businessName = globalSettings != null && globalSettings.HasValue("businessName") ? globalSettings.Value<string>("businessName") : string.Empty;
+    string businessPhone = globalSettings != null && globalSettings.HasValue("businessPhone") ? Regex.Replace(globalSettings.Value("businessPhone").ToString(), "[^0-9]", "") : string.Empty;
+    var businessAddress = globalSettings != null ? globalSettings.Value<IEnumerable<BlockListItem>>("businessAddress").Select(x => x.Content) : null;
+
+    // HIDE IN SITEMAP - SET NO INDEX NO FOLLOW IF HIDE IN SITEMAP IS ON
+    bool noIndex = Model.Value<bool>("noIndex");
+    if (noIndex)
+    {
+        <meta name="robots" content="noindex, nofollow">
+    }
+    
+    // POPULATE META DATA
+    <title>@title</title>
+    <meta name="description" content="@description" />
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="@pageUrl" hreflang="en-us" />
+    <!--BING-->
+    <meta http-equiv="content-language" content="en-us">
+    <!--OPEN GRAPH-->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="@pageUrl" />
+    <meta property="og:title" content="@ogTitle" />
+    <meta property="og:description" content="@description" />
+    if (!string.IsNullOrEmpty(ogImgUrl))
+    {
+        <meta property="og:image" content="@ogImgUrl" />
+    }
+    if (!string.IsNullOrEmpty(twitter))
+    {
+        <!--TWITTER-->
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@twitter" />
+        <meta name="twitter:creator" content="@twitter" />
+    }
+    <!--SCHEMA-->
+    <script type="application/ld+json">
+        {
+        "@@context": "http://schema.org",
+        "@@type": "@schemaType",
+        "name": "@businessName",
+        @if (businessAddress != null)
+        {
+        foreach (var address in businessAddress)
+        {
+        <text>
+        "address": {
+            "@@type": "PostalAddress",
+            "addressLocality": "@address.Value("city")",
+            "addressRegion": "@address.Value("state")",
+            "streetAddress": "@address.Value("streetAddress") @address.Value("streetAddress2")",
+            "postalCode": "@address.Value("zipCode")"
+        },
+        </text>
+        }
+        }
+        "telephone": "@businessPhone",
+        "url": "@siteDomain",
+        "description": "@home.Value("metaDescription")"
+        }
+    </script>
+}

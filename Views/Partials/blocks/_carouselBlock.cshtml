@@ -1,0 +1,81 @@
+﻿@using Umbraco.Cms.Core.Models.Blocks;
+@using Umbraco.Cms.Core.Models;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var itemBlocks = Model.Value<IEnumerable<BlockListItem>>("carouselItems");
+
+    if (itemBlocks != null && itemBlocks.Count() > 0)
+    {
+        // ELEMENT SETTINGS
+        bool hasCaptions = Model.Value<bool>("hasCaptions");
+        bool hasControls = Model.Value<bool>("hasControls");
+        bool hasIndicators = Model.Value<bool>("hasIndicators");
+        // SET COUNTER
+        int i = 0;
+        int itemCount = itemBlocks.Count();
+        // GENERATE UNIQUE ID
+        var rand = new Random();
+        string pcID = "carousel-" + rand.Next(1001).ToString();
+
+        <div id="@pcID" class="carousel slide" data-bs-ride="carousel">
+            @if (hasIndicators)
+            {
+                // SET COUNTER
+                int indi = 0;
+
+                <div class="carousel-indicators">
+                    @foreach (var b in itemBlocks)
+                    {
+                        <button type="button" data-bs-target="#@(pcID)" data-bs-slide-to="@(indi)" @(indi == 0 ? "class=active aria-current=true" : "") aria-label="Slide @(indi)"></button>
+                        indi++;
+                    }
+                </div>
+            }
+            <div class="carousel-inner">
+                @foreach (var block in itemBlocks)
+                {
+                    var item = block.Content;
+                    // PROPERTIES
+                    var image = item.Value<IPublishedContent>("image");
+                    string imgAlt = image != null ? image.Value<string>("altText") : string.Empty;
+                    string title = item.HasValue("title") ? item.Value<string>("title") : string.Empty;
+                    var link = item.Value<Link>("link");
+
+                    if (image != null)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@image.Url()" class="d-block w-100" alt="@imgAlt">
+                            @if (hasCaptions)
+                            {
+                                <div class="carousel-caption d-none d-md-block">
+                                    @if (!string.IsNullOrEmpty(title))
+                                    {
+                                        <p class="h5">@title</p>
+                                    }
+                                    @item.Value("text")
+                                    @if (link != null)
+                                    {
+                                        <a href="@link.Url" target="@link.Target" class="btn btn-primary">@link.Name</a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    i++;
+                }
+            </div>
+            @if (hasControls)
+            {
+                <button class="carousel-control-prev" type="button" data-bs-target="#@(pcID)" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#@(pcID)" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            }
+        </div>
+    }
+}

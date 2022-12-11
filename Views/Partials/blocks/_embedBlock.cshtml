@@ -1,0 +1,9 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var text = Model.Value("embed");
+
+    if (text != null)
+    {
+        @Html.Raw(text)
+    }
+}

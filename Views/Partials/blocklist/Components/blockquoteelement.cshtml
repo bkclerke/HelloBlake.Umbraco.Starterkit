@@ -1,0 +1,30 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+@using Umbraco.Cms.Core.Models;
+@{
+    var content = (ContentModels.BlockQuoteElement)Model.Content;
+    var settings = (ContentModels.BlockQuoteSettings)Model.Settings;
+
+    bool hasSource = content.HasValue("quoteSource");
+    string quoteText = content.Value<string>("quoteText"); // REQUIRED
+    string quoteSource = content.Value<string>("quoteSource"); // OPTIONAL
+
+    if (!hasSource)
+    {
+        <blockquote class="blockquote">
+            <p>@quoteText</p>
+        </blockquote>
+    }
+    else
+    {
+        <figure>
+          <blockquote class="blockquote">
+            <p>@quoteText</p>
+          </blockquote>
+          <figcaption class="blockquote-footer">
+            <cite title="Source Title">@quoteSource</cite>
+          </figcaption>
+        </figure>
+    }
+}

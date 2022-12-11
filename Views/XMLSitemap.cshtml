@@ -1,0 +1,49 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.XmlSitemap>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = null;
+    Context.Response.ContentType = "application/xml";
+    string siteDomain = String.Format("{0}://{1}", Context.Request.Scheme, Context.Request.Host);
+    var pages = Model.AncestorOrSelf(1).Descendants().Where(x =>
+        !x.Value<bool>("noIndex") 
+            && x.ContentType.Alias != "howToGuidePage"    
+            && x.ContentType.Alias != "blockFolder"
+            && x.ContentType.Alias != "utilityFolder"
+            && x.ContentType.Alias != "contentFolder"
+            && x.ContentType.Alias != "altLink" 
+            && x.ContentType.Alias != "xmlSitemap"
+            && x.GetTemplateAlias() != "parentRedirect"
+            && !string.IsNullOrEmpty(x.GetTemplateAlias())
+    );
+}
+@{
+    Func<IEnumerable<IPublishedContent>, IHtmlContent> ShowTree =
+    @<text>@{  
+            if (pages.Count() > 0)
+            {
+                foreach (var page in pages)
+                {
+                    string pageUrl = string.Format("{0}://{1}{2}", Context.Request.Scheme, Context.Request.Host, page.Url().TrimEnd('/'));
+                    string pageUpdateDate = page.UpdateDate.ToString("yyyy-MM-ddTHH:mm:00") + "+00:00";
+
+                    <url>
+                        <loc>@pageUrl</loc>
+                        <lastmod>@pageUpdateDate</lastmod>
+                        <changefreq>weekly</changefreq>
+                        <priority>0.5</priority>
+                    </url>
+                }
+            }
+        }</text>
+    ;
+}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>@siteDomain</loc>
+        <lastmod>@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:00")+00:00</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    @ShowTree(pages)
+</urlset>

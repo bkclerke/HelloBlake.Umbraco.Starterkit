@@ -1,0 +1,14 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+@{
+    var content = (ContentModels.EmbedElement)Model.Content;
+    var settings = (ContentModels.EmbedSettings)Model.Settings;
+
+    var text = content.Value("embed");
+
+    if (text != null)
+    {
+        @Html.Raw(text)
+    }
+}

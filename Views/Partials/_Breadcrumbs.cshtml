@@ -1,0 +1,42 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Routing
+@using Umbraco.Extensions
+@inject IPublishedUrlProvider PublishedUrlProvider
+
+@{
+    bool hideBreadcrumbs = Model.Value<bool>("hideBreadcrumbs");
+    var selection = Model?.Ancestors().ToArray();
+
+    if (!hideBreadcrumbs && selection?.Length > 0)
+    {
+        var items = selection.OrderBy(x => x.Level);
+
+        <div class="breadcrumb-wrap my-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <nav aria-label="breadcrumb" role="navigation">
+                            <ol class="breadcrumb">
+                                @foreach (var item in items)
+                                {
+                                    bool itemHidden = item.Value<bool>("umbracoNaviHide");
+                                    if (itemHidden)
+                                    {
+                                        continue;
+                                    }
+                                    if (!item.ContentType.Alias.ToLower().Contains("folder"))
+                                    {
+                                        <li class="breadcrumb-item">
+                                            <a href="@item.Url(PublishedUrlProvider)">@item.Name</a>
+                                        </li>
+                                    }
+                                }
+                                <li class="breadcrumb-item active" aria-current="page">@Model?.Name</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

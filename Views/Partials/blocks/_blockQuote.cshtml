@@ -1,0 +1,24 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    bool hasSource = Model.HasValue("quoteSource");
+    string quoteText = Model.Value<string>("quoteText"); // REQUIRED
+    string quoteSource = Model.Value<string>("quoteSource"); // OPTIONAL
+
+    if (!hasSource)
+    {
+        <blockquote class="blockquote">
+            <p>@quoteText</p>
+        </blockquote>
+    }
+    else
+    {
+        <figure>
+            <blockquote class="blockquote">
+            <p>@quoteText</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+            <cite title="Source Title">@quoteSource</cite>
+            </figcaption>
+        </figure>
+    }
+}

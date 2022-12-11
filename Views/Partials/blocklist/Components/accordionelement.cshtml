@@ -1,0 +1,35 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+@using Umbraco.Cms.Core.Models;
+@{
+    var content = (ContentModels.AccordionElement)Model.Content;
+    var settings = (ContentModels.AccordionSettings)Model.Settings;
+
+    var itemBlocks = content.Value<IEnumerable<BlockListItem>>("accordionItems");
+
+    if (itemBlocks != null && itemBlocks.Count() > 0)
+    {
+        // GENERATE RANDOM ID
+        Random randNum = new Random();
+        var uniqueId = "accordion-" + randNum.Next(1000);
+        // SET COUNTER
+        int itemCount = 1;
+
+        <div class="accordion my-4" id="@uniqueId">
+            @foreach (var block in itemBlocks)
+            {
+                var item = block.Content;
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading@(itemCount)">
+                        <button class="accordion-button @(itemCount == 1 ? "" : "collapsed")" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(itemCount)" aria-expanded="@(itemCount == 1 ? "true" : "false")" aria-controls="collapse@(itemCount)">@item.Value("title")</button>
+                    </h2>
+                    <div id="collapse@(itemCount)" class="accordion-collapse collapse @(itemCount == 1 ? "show" : "")" aria-labelledby="heading@(itemCount)" data-bs-parent="#@uniqueId">
+                        <div class="accordion-body">@item.Value("text")</div>
+                    </div>
+                </div>
+                itemCount++;
+            }
+        </div>
+    }
+}

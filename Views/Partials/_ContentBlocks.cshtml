@@ -1,0 +1,5 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@if (Model.HasProperty("contentBlocks") && Model.HasValue("contentBlocks"))
+{
+    @Html.GetBlockListHtml(Model, "contentBlocks")
+}

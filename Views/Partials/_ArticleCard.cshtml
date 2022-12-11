@@ -1,0 +1,31 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    var article = Model;
+    var home = Model.Root();
+    var blogPage = home.Children.Where(x => x.ContentType.Alias == "blogPage").FirstOrDefault();
+
+    string articleTitle = article.HasValue("articleTitle") ? article.Value<string>("articleTitle") : article.Name;
+    string articleAuthor = article.HasValue("articleAuthor") ? article.Value<string>("articleAuthor") : blogPage.Value<string>("defaultAuthorName");
+    string articleImgUrl = string.Empty;
+    if (article.HasValue("articleImage"))
+    {
+        articleImgUrl = Url.GetCropUrl(article, "articleImage", "preview").ToString();
+    }
+    string articleDate = string.Format("{0: MM-dd-yyyy}", article.Value<DateTime>("articleDate"));
+    string articleTeaserText = article.HasValue("teaserText") ? article.Value("teaserText").ToString() : string.Empty;
+    string linkAriaLabel = "Read more about " + articleTitle;
+
+    <article class="card">
+        @if (!string.IsNullOrEmpty(articleImgUrl))
+        {
+            string altText = article.HasValue("articleImageAltText") ? article.Value<string>("articleImageAltText") : string.Empty;
+            <img src="@articleImgUrl" class="card-img-top" alt="@altText">
+        }
+        <div class="card-body">
+            <h2 class="card-title">@articleTitle</h2>
+            <p class="card-subtitle mb-2 text-muted">@articleDate</p>
+            <p class="card-text">@articleTeaserText</p>
+            <a href="@article.Url()" class="btn btn-primary" aria-label="@linkAriaLabel">Read More</a>
+        </div>
+    </article>
+}

@@ -1,0 +1,40 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.WebAssets
+@inject IRuntimeMinifier runtimeMinifier
+@{
+    Layout = null;
+    var home = Model.Root();
+    var utilitiesFolder = home.Children.Where(x => x.ContentType.Alias == "uFolder").FirstOrDefault();
+    var globalSettings = utilitiesFolder != null ? utilitiesFolder.Children.Where(x => x.ContentType.Alias == "globalSettings").FirstOrDefault() : null;
+}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @await Html.PartialAsync("_MetaData")
+    @Html.Raw(await runtimeMinifier.RenderCssHereAsync("global-css"))
+    @RenderSection("cp_head", required: false)
+    @if (globalSettings != null)
+    {
+        @Html.Raw(globalSettings.Value("globalHeadTag"))
+    }
+  </head>
+  <body>
+    @if (globalSettings != null)
+    {
+        @Html.Raw(globalSettings.Value("globalBodyTag"))
+    }
+    <a href="#content" class="visually-hidden-focusable">Skip to main content</a>
+    @await Html.PartialAsync("_Header")
+    @RenderBody()
+    @await Html.PartialAsync("_Footer")
+    @Html.Raw(await runtimeMinifier.RenderJsHereAsync("global-js"))
+    @RenderSection("cp_scripts", required: false)
+    @if (globalSettings != null)
+    {
+        @Html.Raw(globalSettings.Value("globalScripts"))
+    }
+  </body>
+</html>
