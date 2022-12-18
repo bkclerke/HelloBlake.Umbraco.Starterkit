@@ -1,8 +1,10 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.SearchPage>
+﻿@using HelloBlake.Web.Models;
+@*@using Umbraco.Cms.Web.Common.PublishedModels;*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<SearchModel>
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
 @{
 	Layout = "Master.cshtml";
+    IPublishedContent searchPage = Model.Root().FirstChild<SearchPage>();
 }
 @section cp_head {
     @Html.Raw(Model.Value("cpHead"))
@@ -10,3 +12,34 @@
 @section cp_scripts {
     @Html.Raw(Model.Value("cpScripts"))
 }
+<main id="content">
+    @await Html.PartialAsync("_ContentHeader")
+    <div class="search">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <form action="@searchPage.Url()">
+                        <div class="mb-3">
+                            <label for="search" class="form-label">Search</label>
+                            <input type="text" class="form-control" placeholder="Search" id="search" name="query" />
+                            <button type="submit" class="btn btn-primary mb-3">Search</button>
+                        </div>
+                    </form>
+                    <p>Your search for <strong>@Model.Query</strong> returned a number of <strong>@Model.TotalResults</strong> result(s):</p>
+                    @if (Model.SearchResults != null && Model.SearchResults.Any())
+                    {
+                        <ul>
+                            @foreach (var item in Model.SearchResults)
+                            {
+                                <li>
+                                    <a href="@item.PublishedItem.Url()">@item.PublishedItem.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.GetBlockListHtml(Model, "contentBlocks")
+</main>
