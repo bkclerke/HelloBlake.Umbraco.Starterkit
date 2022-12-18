@@ -15,7 +15,7 @@
             <ul class="list-group">
                 @if (dynLinks != null)
                 {
-                    var childLinks = dynLinks.Children();
+                    var childLinks = dynLinks.Children().Where(x => x.IsVisible());
                     if (childLinks.Count() > 0)
                     {
                         foreach (var link in childLinks)
