@@ -16,26 +16,34 @@
     @await Html.PartialAsync("_ContentHeader")
     <div class="search">
         <div class="container">
+
+            <form action="@searchPage.Url()">
+                <div class="row align-items-center g-2 mb-3">
+                    <div class="col-auto">
+                        <label for="search" class="form-label my-0">@Umbraco.GetDictionaryValue("Search.Label")</label>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="@Umbraco.GetDictionaryValue("Search.Placeholder")" id="search" name="query" />
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">@Umbraco.GetDictionaryValue("Search.Button")</button>
+                    </div>
+                </div>
+            </form>
+
             <div class="row">
                 <div class="col">
-                    <form action="@searchPage.Url()">
-                        <div class="mb-3">
-                            <label for="search" class="form-label">Search</label>
-                            <input type="text" class="form-control" placeholder="Search" id="search" name="query" />
-                            <button type="submit" class="btn btn-primary mb-3">Search</button>
-                        </div>
-                    </form>
                     <p>Your search for <strong>@Model.Query</strong> returned a number of <strong>@Model.TotalResults</strong> result(s):</p>
                     @if (Model.SearchResults != null && Model.SearchResults.Any())
                     {
-                        <ul>
+                        <ol>
                             @foreach (var item in Model.SearchResults)
                             {
                                 <li>
                                     <a href="@item.PublishedItem.Url()">@item.PublishedItem.Name</a>
                                 </li>
                             }
-                        </ul>
+                        </ol>
                     }
                 </div>
             </div>
