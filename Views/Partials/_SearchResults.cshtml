@@ -1,1 +1,20 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@using HelloBlake.Web.Models;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<SearchModel>
+@{
+    if (Model.SearchResults != null && Model.SearchResults.Any())
+    {
+        <div class="row">
+            <div class="col">
+                <p>Your search for <strong>@Model.Query</strong> returned a number of <strong>@Model.TotalResults</strong> result(s):</p>
+                <ol>
+                    @foreach (var item in Model.SearchResults)
+                    {
+                        <li>
+                            <a href="@item.PublishedItem.Url()">@item.PublishedItem.Name</a>
+                        </li>
+                    }
+                </ol>
+            </div>
+        </div>
+    }
+}
