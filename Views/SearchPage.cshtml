@@ -1,8 +1,10 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.SearchPage>
+﻿@using HelloBlake.Web.Models;
+@*@using Umbraco.Cms.Web.Common.PublishedModels;*@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<SearchModel>
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
 @{
 	Layout = "Master.cshtml";
+    IPublishedContent searchPage = Model.Root().FirstChild<SearchPage>();
 }
 @section cp_head {
     @Html.Raw(Model.Value("cpHead"))
@@ -10,3 +12,42 @@
 @section cp_scripts {
     @Html.Raw(Model.Value("cpScripts"))
 }
+<main id="content">
+    @await Html.PartialAsync("_ContentHeader")
+    <div class="search">
+        <div class="container">
+
+            <form action="@searchPage.Url()">
+                <div class="row align-items-center g-2 mb-3">
+                    <div class="col-auto">
+                        <label for="search" class="form-label my-0">@Umbraco.GetDictionaryValue("Search.Label")</label>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="@Umbraco.GetDictionaryValue("Search.Placeholder")" id="search" name="query" />
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">@Umbraco.GetDictionaryValue("Search.Button")</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <p>Your search for <strong>@Model.Query</strong> returned a number of <strong>@Model.TotalResults</strong> result(s):</p>
+                    @if (Model.SearchResults != null && Model.SearchResults.Any())
+                    {
+                        <ol>
+                            @foreach (var item in Model.SearchResults)
+                            {
+                                <li>
+                                    <a href="@item.PublishedItem.Url()">@item.PublishedItem.Name</a>
+                                </li>
+                            }
+                        </ol>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.GetBlockListHtml(Model, "contentBlocks")
+</main>
