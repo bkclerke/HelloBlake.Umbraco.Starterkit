@@ -1,0 +1,18 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    IPublishedContent searchPage = Model.Root().FirstChild<SearchPage>();
+
+    <form action="@searchPage.Url()">
+        <div class="row align-items-center g-2 mb-3">
+            <div class="col-auto">
+                <label for="search" class="form-label my-0">@Umbraco.GetDictionaryValue("Search.Label")</label>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="@Umbraco.GetDictionaryValue("Search.Placeholder")" id="search" name="query" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">@Umbraco.GetDictionaryValue("Search.Button")</button>
+            </div>
+        </div>
+    </form>
+}
