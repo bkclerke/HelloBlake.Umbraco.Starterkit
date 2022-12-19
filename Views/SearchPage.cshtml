@@ -16,7 +16,6 @@
     @await Html.PartialAsync("_ContentHeader")
     <div class="search">
         <div class="container">
-
             <form action="@searchPage.Url()">
                 <div class="row align-items-center g-2 mb-3">
                     <div class="col-auto">
@@ -30,12 +29,11 @@
                     </div>
                 </div>
             </form>
-
-            <div class="row">
-                <div class="col">
-                    <p>Your search for <strong>@Model.Query</strong> returned a number of <strong>@Model.TotalResults</strong> result(s):</p>
-                    @if (Model.SearchResults != null && Model.SearchResults.Any())
-                    {
+            @if (Model.SearchResults != null && Model.SearchResults.Any())
+            {
+                <div class="row">
+                    <div class="col">
+                        <p>Your search for <strong>@Model.Query</strong> returned a number of <strong>@Model.TotalResults</strong> result(s):</p>
                         <ol>
                             @foreach (var item in Model.SearchResults)
                             {
@@ -44,9 +42,9 @@
                                 </li>
                             }
                         </ol>
-                    }
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
     @Html.GetBlockListHtml(Model, "contentBlocks")
