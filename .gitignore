@@ -1,5 +1,7 @@
 # Custom
 appsettings.production.json
+usync/*/content/*
+usync/*/media/*
 
 ##
 ## Umbraco CMS
