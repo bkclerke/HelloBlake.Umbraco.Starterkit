@@ -10,6 +10,10 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Examine;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Infrastructure.PublishedCache;
+using Umbraco.Cms.Core.PublishedCache;
+using Umbraco.Cms.Core.Web;
 
 namespace HelloBlake.Web.Components
 {
@@ -19,13 +23,15 @@ namespace HelloBlake.Web.Components
         private readonly ILocalizationService _localizationService;
         private readonly ILogger<ExamineComponents> _logger;
         private readonly IContentTypeService _contentTypeService;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-        public ExamineComponents(IExamineManager examineManager, ILocalizationService localizationService, IContentTypeService contentTypeService, ILogger<ExamineComponents> logger)
+        public ExamineComponents(IExamineManager examineManager, ILocalizationService localizationService, IContentTypeService contentTypeService, ILogger<ExamineComponents> logger, IUmbracoContextFactory umbracoContextFactory)
         {
             _examineManager = examineManager;
             _localizationService = localizationService;
             _logger = logger;
             _contentTypeService = contentTypeService;
+            _umbracoContextFactory= umbracoContextFactory;
         }
         public void Initialize()
         {
@@ -63,17 +69,20 @@ namespace HelloBlake.Web.Components
                             var cultureAndInvariantFields = GetCultureAndInvariantFields(updatedValues, languageIsoCode);
                             var combinedFieldsLang = new StringBuilder();
 
-
                             foreach (var field in cultureAndInvariantFields.Where(x => !x.StartsWith("contents") && !x.StartsWith("__Raw")))
                             {
                                 updatedValues.TryGetValue(field, out List<object> values);
 
                                 if (values != null)
+                                {
                                     foreach (var value in values)
                                     {
                                         if (value != null)
+                                        {
                                             combinedFieldsLang.AppendLine(value.ToString());
+                                        }
                                     }
+                                }
                             }
 
                             updatedValues.Add("contents_" + languageIsoCode, new List<object> { combinedFieldsLang.ToString() });
@@ -90,7 +99,9 @@ namespace HelloBlake.Web.Components
                             foreach (var value in fieldValues.Value)
                             {
                                 if (value != null)
+                                {
                                     combinedFields.AppendLine(value.ToString());
+                                }
                             }
                         }
 
@@ -103,36 +114,8 @@ namespace HelloBlake.Web.Components
                 {
                     _logger.LogError(ex, "Error combining fields for {ValueSetId}", e.ValueSet.Id);
                 }
-
-                try
-                {
-                    var updatedValues = e.ValueSet.Values.ToDictionary(x => x.Key, x => x.Value.ToList());
-                    string[] alias = new string[1] { "blog" };
-                    string blogTypeId = _contentTypeService.GetAllContentTypeIds(alias).FirstOrDefault().ToString();
-                    updatedValues.TryGetValue("nodeType", out var nType);
-                    updatedValues.TryGetValue("publishingDate", out var publishingDate);
-                    updatedValues.TryGetValue("createDate", out var fallbackDate);
-                    //good to know - dates are saved in DateTime.Ticks
-                    //we only do this on Blog doctype
-                    if (nType.FirstOrDefault().ToString() == blogTypeId)
-                    {
-                        if (publishingDate == null)
-                        {
-                            updatedValues.Remove("publishingDate");
-                            //cleared the publishingDate value, let's add one that is filled out
-                            updatedValues.Add("publishingDate", fallbackDate);
-                        }
-                        e.SetValues(updatedValues.ToDictionary(x => x.Key, x => (IEnumerable<object>)x.Value));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error setting the fallback for PublishingDate");
-                }
             }
         }
-
-
 
         public void Terminate()
         {
