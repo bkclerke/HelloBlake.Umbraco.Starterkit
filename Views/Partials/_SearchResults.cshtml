@@ -1,7 +1,7 @@
 ﻿@using HelloBlake.Web.Models;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<SearchModel>
 @{
-    if (Model.SearchResults != null || Model.Query != null)
+    if (Model.Query != null && Model.Query != "_")
     {
         <div class="row">
             <div class="col">
