@@ -65,9 +65,12 @@ namespace HelloBlake.Web.Services
                 var fieldToSearchLang = "contents" + "_" + CultureInfo.CurrentCulture.ToString().ToLower();
                 var fieldToSearchInvariant = "contents";
                 var hideFromSitemap = "noIndex";
+                var doctypesToSearch = new[] { "home", "contentPage", "blogPage", "articlePage" };
                 var fieldsToSearch = new[] { fieldToSearchLang, fieldToSearchInvariant };
                 var criteria = searcher.CreateQuery(IndexTypes.Content);
                 IBooleanOperation examineQuery;
+
+                examineQuery = criteria.GroupedOr(new string[] { "__NodeTypeAlias" }, doctypesToSearch); // filter by allowed doctypes
 
                 if (searchTerm.Contains(" "))
                 {
@@ -82,10 +85,11 @@ namespace HelloBlake.Web.Services
                 //var examineQuery = criteria.GroupedOr(fieldsToSearch, searchTerm.MultipleCharacterWildcard()); // wildcard search
                 //var examineQuery = criteria.GroupedOr(fieldsToSearch, searchTerm.Fuzzy(0.2f)); // fuzzy search
                 examineQuery.Not().Field(hideFromSitemap, 1.ToString());
-                
+
                 using (_profiler.Step("Examine query"))
                 {
                     var results = examineQuery.Execute();
+                    // lucenequery => { Category: content, LuceneQuery: +(contents_en-us:rich contents_en-us:text contents_en-us:bloc contents:rich contents:text contents:bloc) +(__NodeTypeAlias:home __NodeTypeAlias:contentpage __NodeTypeAlias:blogpage __NodeTypeAlias:articlepage) -noIndex:1 }
                     totalItemCount = results.TotalItemCount;
                     if (results.Any())
                     {
