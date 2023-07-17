@@ -19,6 +19,12 @@ I also recommend changing your passwords. ;)
 ---
 
 ## Releases
+
+### 7/16/23: Release 1.1
+
+Release 1.1 is available with a breadcrumb enhancement.
+**NOTE:** Continued development for 1.1 features are still in the works and have not been commited yet. Details can be found on the release notes.
+
 ### 3/8/23: Release 1
 
 Release 1 is available for Umbraco version 10.X. Initial features are listed on the [Release Notes](https://bkclerke.notion.site/HelloBlake-Umbraco-Starterkit-Roadmap-5dcefd83358840a3bf3860276129adc2) page. The bulk of the content area takes advantage of the Block List editor in this setup.
