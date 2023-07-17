@@ -1,13 +1,14 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Umbraco.Cms.Core.Routing
 @using Umbraco.Extensions
+@using HelloBlake.Web.Controllers
 @inject IPublishedUrlProvider PublishedUrlProvider
 
 @{
-    bool hideBreadcrumbs = Model.Value<bool>("hideBreadcrumbs");
+    PageComponents pc = new PageComponents();
     var selection = Model?.Ancestors().ToArray();
 
-    if (!hideBreadcrumbs && selection?.Length > 0)
+    if (selection?.Length > 0)
     {
         var items = selection.OrderBy(x => x.Level);
 
@@ -19,12 +20,7 @@
                             <ol class="breadcrumb">
                                 @foreach (var item in items)
                                 {
-                                    bool itemHidden = item.Value<bool>("umbracoNaviHide");
-                                    if (itemHidden)
-                                    {
-                                        continue;
-                                    }
-                                    if (!item.ContentType.Alias.ToLower().Contains("folder"))
+                                    if (!pc.IsNodeTypeAlias(item.ContentType.Alias))
                                     {
                                         <li class="breadcrumb-item">
                                             <a href="@item.Url(PublishedUrlProvider)">@item.Name</a>
