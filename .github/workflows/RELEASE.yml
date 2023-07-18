@@ -3,7 +3,7 @@ name: Build, publish and deploy project to UmbHost
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 env:
     SolutionName: ${{ secrets.SOLUTION_NAME }}
     BuildPlatform: Any CPU
