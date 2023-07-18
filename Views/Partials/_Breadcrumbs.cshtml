@@ -1,11 +1,8 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Umbraco.Cms.Core.Routing
 @using Umbraco.Extensions
-@using HelloBlake.Web.Controllers
-@inject IPublishedUrlProvider PublishedUrlProvider
 
 @{
-    PageComponents pc = new PageComponents();
     var selection = Model?.Ancestors().ToArray();
 
     if (selection?.Length > 0)
@@ -20,10 +17,10 @@
                             <ol class="breadcrumb">
                                 @foreach (var item in items)
                                 {
-                                    if (!pc.IsNodeTypeAlias(item.ContentType.Alias))
+                                    if (item.IsComposedOf("contentNodeComposition"))
                                     {
                                         <li class="breadcrumb-item">
-                                            <a href="@item.Url(PublishedUrlProvider)">@item.Name</a>
+                                            <a href="@item.Url()">@item.Name</a>
                                         </li>
                                     }
                                 }

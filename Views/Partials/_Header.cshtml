@@ -3,7 +3,7 @@
 @{
     var home = Model.AncestorOrSelf(1);
     // GET DEFAULT PAGES
-    var pages = home.Children.Where(x => x.IsVisible() && x.ContentType.Alias != "howToGuidePage" && x.ContentType.Alias != "blockFolder" && x.ContentType.Alias != "utilityFolder" && x.ContentType.Alias != "contentFolder" && x.ContentType.Alias != "xmlSitemap");
+    var pages = home.Children.Where(x => x.IsVisible() && x.IsComposedOf("contentNodeComposition"));
     // CHECK FOR GLOBAL SETTINGS NODE
     var utilitiesFolder = home.Children.Where(x => x.ContentType.Alias == "utilityFolder").FirstOrDefault();
     var globalSettings = utilitiesFolder != null ? utilitiesFolder.Children.Where(x => x.ContentType.Alias == "globalSettings").FirstOrDefault() : null;
