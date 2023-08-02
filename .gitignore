@@ -1,7 +1,8 @@
 # Custom
-appsettings.production.json
-/uSync/*/Content/*
-/uSync/*/Media/*
+HelloBlake.Umbraco.Starterkit/appsettings.production.json
+HelloBlake.Umbraco.Starterkit/uSync/*/Content/*
+HelloBlake.Umbraco.Starterkit/uSync/*/Media/*
+HelloBlake.Umbraco.Starterkit/.config/
 
 ##
 ## Umbraco CMS
@@ -25,7 +26,7 @@ appsettings-schema.json
 /umbraco/Logs/
 
 # Media files
-/wwwroot/media/
+HelloBlake.Umbraco.Starterkit/wwwroot/media/
 
 
 

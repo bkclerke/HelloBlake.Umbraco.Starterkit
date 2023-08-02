@@ -41,55 +41,5 @@
         <RazorCompileOnPublish>false</RazorCompileOnPublish>
         <UserSecretsId>8231dc27-7430-4511-89de-1b9a9814216c</UserSecretsId>
     </PropertyGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\main.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\blocks\textwithimage\_layout.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\blocks\textwithimage\_theme.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\blocks\carousel\_theme.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Update="wwwroot\css\images\our_heart.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\_layout.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\navbar\_theme.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\abstracts\_spacing.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\abstracts\_base.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\abstracts\_variables.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="scss\main.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\abstracts\_utilities.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\blocks\linklist\_layout.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\blocks\carousel\_layout.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="scss\blocks\linklist\_theme.scss" />
-    </ItemGroup>
-    <ItemGroup>
-      <UpToDateCheckInput Remove="wwwroot\umbraco\**" />
-    </ItemGroup>
 
 </Project>
