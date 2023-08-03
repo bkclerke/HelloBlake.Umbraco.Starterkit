@@ -14,6 +14,7 @@
         bool hasCaptions = settings.Value<bool>("hasCaptions");
         bool hasControls = settings.Value<bool>("hasControls");
         bool hasIndicators = settings.Value<bool>("hasIndicators");
+        bool hasAutoPlay = settings.Value<bool>("hasAutoPlay");
         // SET COUNTER
         int i = 0;
         int itemCount = itemBlocks.Count();
@@ -21,7 +22,14 @@
         var rand = new Random();
         string pcID = "carousel-" + rand.Next(1001).ToString();
 
-        <div id="@pcID" class="carousel slide" data-bs-ride="carousel">
+        <div id="@pcID" class="carousel slide" data-bs-pause="false" @(hasAutoPlay ? "data-bs-ride=carousel" : "")>
+            @if (hasAutoPlay)
+            {
+                <button type="button" data-carousel-id="@pcID" class="carousel-media-btn theme-light" aria-label="Pause Carousel">
+                    <i class="fa-solid fa-circle-play btn-play"></i>
+                    <i class="fa-solid fa-circle-pause btn-pause"></i>
+                </button>
+            }
             @if (hasIndicators)
             {
                 // SET COUNTER

@@ -1,3 +1,30 @@
 ﻿// ----------------------------------
 // CAROUSEL
 // ----------------------------------
+
+// HAS AUTO PLAY - ACCESSIBILLITY PLAY PAUSE FEATURE
+.carousel-media-btn {
+    display: flex;
+    position: absolute;
+    z-index: 9;
+    border: none;
+    background: transparent;
+    font-size: 2rem;
+    padding: 1rem;
+    bottom: 0;
+    right: 0;
+
+    .btn-play {
+        display: none;
+    }
+
+    &.is-paused {
+        .btn-play {
+            display: block;
+        }
+
+        .btn-pause {
+            display: none;
+        }
+    }
+}
