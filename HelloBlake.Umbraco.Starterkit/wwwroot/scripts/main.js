@@ -1,43 +1,43 @@
 // BOOTSTRAP CAROUSEL - ACCESSIBILLITY PLAY PAUSE FEATURE
-const button = document.querySelector("button.carousel-media-btn");
-if (button != null) {
-    button.addEventListener("click", function () {
-
-        var isPaused = this.classList.contains("is-paused");
-        var carouselId = this.dataset.carouselId;
-        var carouselEl = document.getElementById(carouselId);
-        var $carousel = bootstrap.Carousel.getInstance(carouselEl);
-
-        if (isPaused) {
-            this.classList.remove("is-paused");
-            this.setAttribute("aria-label", "Pause Carousel");
-            isPaused = this.classList.contains("is-paused");
-            $carousel.cycle();
-        }
-        else {
-            this.classList.add("is-paused");
-            this.setAttribute("aria-label", "Play Carousel");
-            isPaused = this.classList.contains("is-paused");
-            $carousel.pause();
-        }
-
-    });
+function playBtn(button) {
+    button.classList.remove("is-paused");
+    button.setAttribute("aria-label", "Pause Carousel");
 }
-const carouselButtons = document.querySelectorAll('.carousel button:not(.carousel-media-btn)');
-carouselButtons.forEach(button => {
+
+function pauseBtn(button) {
+    button.classList.add("is-paused");
+    button.setAttribute("aria-label", "Play Carousel");
+}
+
+const carouselBtns = document.querySelectorAll('.carousel button');
+carouselBtns.forEach(button => {
     button.addEventListener('click', () => {
+        // determine if media button was clicked
+        const mediaBtnClick = button.classList.contains('carousel-media-btn');
+        // get nearest carousel id
         const nearestCarouselId = button.closest("div.carousel").getAttribute('id');
+        // get nearest carousel media button
+        const carouselMediaBtn = document.querySelector("#" + nearestCarouselId + " button.carousel-media-btn");
+        // check if slider has autoplay enabled
+        if (carouselMediaBtn) {
+            // get carousel instance
+            var carouselEl = document.getElementById(nearestCarouselId);
+            var $carousel = bootstrap.Carousel.getInstance(carouselEl);
+            // determine carousel paused state
+            var isPaused = carouselMediaBtn.classList.contains("is-paused");
 
-        if (nearestCarouselId) {
-            const carouselMediaBtn = document.querySelector("#" + nearestCarouselId + " button.carousel-media-btn");
-
-            if (carouselMediaBtn) {
-                var carouselPaused = carouselMediaBtn.classList.contains("is-paused");
-                if (carouselPaused) {
-                    carouselMediaBtn.classList.remove("is-paused");
-                    carouselMediaBtn.setAttribute("aria-label", "Pause Carousel");
-                }
+            if (mediaBtnClick && isPaused) {
+                // play
+                playBtn(carouselMediaBtn);
+                $carousel.cycle();
+            } else if (mediaBtnClick && !isPaused) {
+                // pause
+                pauseBtn(carouselMediaBtn);
+                $carousel.pause();
+            } else if (!mediaBtnClick && isPaused) {
+                // update button to reflect play state
+                playBtn(carouselMediaBtn);
             }
         }
-    });
+    })
 });
