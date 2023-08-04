@@ -26,17 +26,23 @@ carouselBtns.forEach(button => {
             // determine carousel paused state
             var isPaused = carouselMediaBtn.classList.contains("is-paused");
 
-            if (mediaBtnClick && isPaused) {
-                // play
-                playBtn(carouselMediaBtn);
-                $carousel.cycle();
-            } else if (mediaBtnClick && !isPaused) {
-                // pause
-                pauseBtn(carouselMediaBtn);
-                $carousel.pause();
-            } else if (!mediaBtnClick && isPaused) {
-                // update button to reflect play state
-                playBtn(carouselMediaBtn);
+            if (mediaBtnClick) {
+                if (isPaused) {
+                    // play
+                    playBtn(carouselMediaBtn);
+                    $carousel.cycle();
+                }
+                else {
+                    // pause
+                    pauseBtn(carouselMediaBtn);
+                    $carousel.pause();
+                }
+                
+            } else {
+                if (isPaused) {
+                    // update button to reflect play state
+                    playBtn(carouselMediaBtn);
+                }
             }
         }
     })
